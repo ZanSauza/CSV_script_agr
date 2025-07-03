@@ -7,21 +7,11 @@ def create_table(file, data):
     table = []
     with open(file, 'r', encoding="utf-8") as csvfile:
         table_reader = csv.reader(csvfile, delimiter=";")
-        for row in table_reader:
-            print(row)
-            table.append(row[0])
+
 
     print(table)
+    return table
 
-
-
-    table_data = []
-    # for i in data:
-    #     print(i)
-    #     # table_data.append(i)
-
-
-    return data
 
 
 def parse_columns(file, column_name, cond, val):
@@ -92,21 +82,25 @@ def main():
     file_path = args.file
     arg_filter = args.where
 
-    filtered_rows = filter_values(arg_filter)
+    if file_path is not None and arg_filter is None:
+        create_table(file_path, args.file)
 
-    parsed_columns = parse_columns(file_path, filtered_rows[0], filtered_rows[1], filtered_rows[2])
+    if file_path is not None and arg_filter is not None:
+        filtered_rows = filter_values(arg_filter)
 
-    table = create_table(file_path, parsed_columns)
+        parsed_columns = parse_columns(file_path, filtered_rows[0], filtered_rows[1], filtered_rows[2])
 
-    print(table)
+        table = create_table(file_path, parsed_columns)
+
+        # print(table)
 
     # print(parsed_columns)
 
 
 
 
-    return filtered_rows
-
+        return filtered_rows
+    return None
 
 
 if __name__ == '__main__':
