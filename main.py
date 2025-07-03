@@ -1,16 +1,85 @@
 import argparse
+import csv
+import operator
 from tabulate import tabulate
 
+def create_table(file, data):
+    table = []
+    with open(file, 'r', encoding="utf-8") as csvfile:
+        table_reader = csv.reader(csvfile, delimiter=";")
+        for row in table_reader:
+            print(row)
+            table.append(row[0])
 
-def filter_table(table, column_name, filter_value):
+    print(table)
+
+
+
+    table_data = []
+    # for i in data:
+    #     print(i)
+    #     # table_data.append(i)
+
+
+    return data
+
+
+def parse_columns(file, column_name, cond, val):
+    ops = {
+        '>': operator.gt,
+        '>=': operator.ge,
+        '<': operator.lt,
+        '<=': operator.le,
+        '=': operator.eq,
+        '!=': operator.ne
+    }
+
     try:
-        column_index = table[0].index(column_name)
+        val = float(val)
     except ValueError:
-        print(f"Ошибка: Столбец с именем '{column_name}' не найден в таблице.")
-        return []
+        pass
 
-    filtered_rows = [row for row in table[1:] if row[column_index] == filter_value]
-    return filtered_rows
+    result = []
+    with open(file, 'r', encoding="utf-8") as csvfile:
+        column_reader = csv.DictReader(csvfile, delimiter=";")
+        for row in column_reader:
+            cell_val = row[column_name]
+
+            try:
+                cell_val = float(cell_val)
+            except ValueError:
+                cell_val = cell_val
+
+            if cond in ops:
+                if ops[cond](cell_val, val):
+                    # print(row[column_name])
+                    result.append(row)
+
+
+
+    return result
+    # return tabulate(result, headers="firstrow", tablefmt="grid")
+
+
+
+def filter_values(filter_value):
+    column = ""
+    condition = ""
+    value = ""
+
+    for i in filter_value:
+        if i.isalpha() and condition == "":
+            column+=i
+        if not i.isalpha() and not i.isdigit():
+            condition+=i
+        if (i.isalpha() or i.isdigit()) and condition != "":
+            value+=i
+
+    return column, condition, value
+
+
+
+
 
 
 def main():
@@ -18,30 +87,26 @@ def main():
     parser.add_argument('--file', type=str)
     parser.add_argument('--where',  type=str)
 
-
     args = parser.parse_args()
 
     file_path = args.file
-
     arg_filter = args.where
 
-    data = []
+    filtered_rows = filter_values(arg_filter)
 
-    with open(file_path, 'r', encoding="utf-8") as f:
-        content = f.readlines()
-        for i in content:
-            data.append(i.split(";"))
+    parsed_columns = parse_columns(file_path, filtered_rows[0], filtered_rows[1], filtered_rows[2])
 
-    filtered_rows = filter_table(data, args.where)
+    table = create_table(file_path, parsed_columns)
 
-    if filtered_rows:
-        print("Результаты фильтрации:")
-        for row in filtered_rows:
-            print(row)
+    print(table)
 
-    # print(tabulate(arg_filter if arg_filter in data else "None"))
+    # print(parsed_columns)
 
-        # print(tabulate(data, headers="firstrow", tablefmt="grid"))
+
+
+
+    return filtered_rows
+
 
 
 if __name__ == '__main__':
