@@ -34,7 +34,7 @@ def parse_aggregate(file, column_name, cond, val):
                 result.append([result_value])
 
 
-            if val == "max":
+            elif val == "max":
                 for row in column_reader:
                     cell_val = row[column_name]
                     cell = cell_value(cell_val)
@@ -45,7 +45,7 @@ def parse_aggregate(file, column_name, cond, val):
 
                 result.append([max(val_list)])
 
-            if val == "min":
+            elif val == "min":
                 for row in column_reader:
                     cell_val = row[column_name]
                     cell = cell_value(cell_val)
@@ -56,15 +56,17 @@ def parse_aggregate(file, column_name, cond, val):
                 result.append([min(val_list)])
 
             else:
-                print(val)
-                print('fssdffsd')
+                raise ValueError
+
 
         except TypeError:
             print("Столбец должен иметь числовое значение!")
         except ValueError:
-            print("неверное значение введите: avg, min или max")
+           print("неверное значение введите: avg, min или max")
+        except KeyError:
+           print("неверное названеи столбца")
 
-    return result
+        return result
 
 
 

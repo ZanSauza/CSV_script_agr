@@ -15,13 +15,16 @@ def create_table(file):
 
 def create_table_where(data):
     table_2 = []
+    try:
+        for elems in data:
+            if not table_2:
+                table_2.append([key for key in elems.keys()])
+                table_2.append([value for value in elems.values()])
+            else:
+                table_2.append([value for value in elems.values()])
+    except AttributeError:
+        print("неверное названеи столбца")
 
-    for elems in data:
-        if not table_2:
-            table_2.append([key for key in elems.keys()])
-            table_2.append([value for value in elems.values()])
-        else:
-            table_2.append([value for value in elems.values()])
 
 
     return table_2

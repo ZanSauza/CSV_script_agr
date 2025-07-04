@@ -30,17 +30,18 @@ def main():
         filtered_where = filter_values(arg_filter)
         parsed_where = parse_where(file_path, filtered_where[0], filtered_where[1], filtered_where[2])
         table_2 = create_table_where(parsed_where)
+        table_2 = tabulate(table_2, headers="firstrow", tablefmt="grid")
+        print(table_2)
 
-        print(tabulate(table_2, headers="firstrow", tablefmt="grid"))
 
 
     if arg_aggregate:
         filtered_aggregate = filter_values(arg_aggregate)
         parsed_aggregate = parse_aggregate(file_path, filtered_aggregate[0], filtered_aggregate[1], filtered_aggregate[2])
-        print(parsed_aggregate)
         table_3 = tabulate(parsed_aggregate, headers="firstrow", tablefmt="grid")
-
         print(table_3)
+
+
 
 
 

@@ -21,10 +21,13 @@ parse_where_lst_2 = [
     [{'name': 'iphone 15 pro', 'brand': 'apple', 'price': '999', 'rating': '4.9'}]
                      ]
 
-parse_aggregate_lst_1 = ["rating=min", "price=avg"]
+parse_aggregate_lst_1 = [("rating", "=", "min"), ("price", "=", "avg"), ("price", "=", "max"), ("rating", "=", "ABCDEFGYTABBC")]
 parse_aggregate_lst_2 = [
     [['min'], [4.4]],
     [['avg'], [674.0]],
+    [['max'], [1199.0]],
+    [['ABCDEFGYTABBC']]
+
 
 
 ]
@@ -41,11 +44,22 @@ def test_filter_values():
 def test_parse_where():
     count = 0
     for i in parse_where_lst_1:
-        assert parse_where(file_path, parse_where_lst_1[count][0], parse_where_lst_1[count][1], parse_where_lst_1[count][2]) == parse_where_lst_2[count]
+        assert parse_where(file_path, parse_where_lst_1[count][0],
+                           parse_where_lst_1[count][1], parse_where_lst_1[count][2]) == parse_where_lst_2[count]
         count += 1
 
 
 def test_parse_aggregate():
+    count = 0
+    for i in parse_aggregate_lst_1:
+        assert parse_aggregate(file_path, parse_aggregate_lst_1[count][0],
+                               parse_aggregate_lst_1[count][1],parse_aggregate_lst_1[count][2]) == parse_aggregate_lst_2[count]
+        count += 1
 
 
 
+
+if __name__ == '__main__':
+    test_filter_values()
+    test_parse_where()
+    test_parse_aggregate()
