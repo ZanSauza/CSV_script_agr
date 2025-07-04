@@ -3,13 +3,21 @@ import csv
 import operator
 from tabulate import tabulate
 
-def create_table(file, data):
+def create_table(data):
     table = []
-    with open(file, 'r', encoding="utf-8") as csvfile:
-        table_reader = csv.reader(csvfile, delimiter=";")
+
+    for elems in data:
+        if not table:
+            table.append([key for key in elems.keys()])
+            table.append([value for value in elems.values()])
+        else:
+            table.append([value for value in elems.values()])
 
 
-    print(table)
+
+
+
+
     return table
 
 
@@ -42,13 +50,10 @@ def parse_columns(file, column_name, cond, val):
 
             if cond in ops:
                 if ops[cond](cell_val, val):
-                    # print(row[column_name])
                     result.append(row)
 
 
-
     return result
-    # return tabulate(result, headers="firstrow", tablefmt="grid")
 
 
 
@@ -82,25 +87,30 @@ def main():
     file_path = args.file
     arg_filter = args.where
 
-    if file_path is not None and arg_filter is None:
-        create_table(file_path, args.file)
 
-    if file_path is not None and arg_filter is not None:
-        filtered_rows = filter_values(arg_filter)
+    filtered_rows = filter_values(arg_filter)
 
-        parsed_columns = parse_columns(file_path, filtered_rows[0], filtered_rows[1], filtered_rows[2])
+    parsed_columns = parse_columns(file_path, filtered_rows[0], filtered_rows[1], filtered_rows[2])
 
-        table = create_table(file_path, parsed_columns)
+    table = create_table(parsed_columns)
 
-        # print(table)
+    print(tabulate(table, headers="firstrow", tablefmt="grid"))
+
+
+    # print(parsed_columns)
+    #
+    # print("----------------------------------------")
+    #
+    # print("----------------------------------------")
+    # print(table)
 
     # print(parsed_columns)
 
 
 
 
-        return filtered_rows
-    return None
+    return filtered_rows
+
 
 
 if __name__ == '__main__':
