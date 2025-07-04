@@ -3,22 +3,31 @@ import csv
 import operator
 from tabulate import tabulate
 
-def create_table(data):
-    table = []
+
+
+def create_table(file):
+    table_1 = []
+
+    with open(file, 'r', encoding="utf-8") as csvfile:
+        reader = csv.reader(csvfile, delimiter=";")
+        for row in reader:
+            table_1.append(row)
+
+    return table_1
+
+
+def create_table_arg(data):
+    table_2 = []
 
     for elems in data:
-        if not table:
-            table.append([key for key in elems.keys()])
-            table.append([value for value in elems.values()])
+        if not table_2:
+            table_2.append([key for key in elems.keys()])
+            table_2.append([value for value in elems.values()])
         else:
-            table.append([value for value in elems.values()])
+            table_2.append([value for value in elems.values()])
 
 
-
-
-
-
-    return table
+    return table_2
 
 
 
@@ -87,29 +96,20 @@ def main():
     file_path = args.file
     arg_filter = args.where
 
-
-    filtered_rows = filter_values(arg_filter)
-
-    parsed_columns = parse_columns(file_path, filtered_rows[0], filtered_rows[1], filtered_rows[2])
-
-    table = create_table(parsed_columns)
-
-    print(tabulate(table, headers="firstrow", tablefmt="grid"))
+    if file_path and not arg_filter:
+        table_1 = create_table(file_path)
+        print(tabulate(table_1, headers="firstrow", tablefmt="grid"))
 
 
-    # print(parsed_columns)
-    #
-    # print("----------------------------------------")
-    #
-    # print("----------------------------------------")
-    # print(table)
+    if arg_filter:
+        filtered_rows = filter_values(arg_filter)
+        parsed_columns = parse_columns(file_path, filtered_rows[0], filtered_rows[1], filtered_rows[2])
 
-    # print(parsed_columns)
+        table_2 = create_table_arg(parsed_columns)
 
+        print(tabulate(table_2, headers="firstrow", tablefmt="grid"))
 
 
-
-    return filtered_rows
 
 
 
